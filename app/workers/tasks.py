@@ -5,7 +5,6 @@ from typing import Any
 from app.core.config import get_settings
 from app.core.logging import get_logger
 from app.workers.celery_app import celery_app
-from app.workers.job_processor import process_job
 
 logger = get_logger(__name__)
 settings = get_settings()
@@ -16,6 +15,8 @@ def process_bulk_job_task(self, job_id_str: str) -> dict[str, Any]:
     """
     Celery worker entrypoint for batch processing with automatic retry and exponential backoff.
     """
+    from app.workers.job_processor import process_job
+
     job_id = uuid.UUID(job_id_str)
     logger.info(f"Celery task received for job {job_id} (attempt {self.request.retries + 1})")
 

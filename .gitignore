@@ -59,6 +59,9 @@ cover/
 *.sqlite
 *.sqlite3
 *.db
+*.db-journal
+*.db-wal
+*.db-shm
 
 # IDEs
 .idea/

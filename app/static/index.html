@@ -3,40 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DataFlow | Production-Grade Ingestion & Processing Platform</title>
+  <title>DataFlow | Enterprise Data Ingestion & Processing Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #090d16;
-      --card-bg: rgba(22, 30, 49, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
-      --primary-glow: rgba(59, 130, 246, 0.35);
+      --bg-dark: #080c14;
+      --bg-card: rgba(15, 23, 42, 0.7);
+      --bg-card-hover: rgba(26, 38, 66, 0.85);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(99, 102, 241, 0.5);
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-glow: rgba(99, 102, 241, 0.25);
+      --accent: #06b6d4;
       --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.15);
       --warning: #f59e0b;
+      --warning-glow: rgba(245, 158, 11, 0.15);
       --danger: #ef4444;
-      --text: #f3f4f6;
-      --text-muted: #9ca3af;
-      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
+      --danger-glow: rgba(239, 68, 68, 0.15);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      background: radial-gradient(circle at top right, #131b2e 0%, #090d16 100%);
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(15, 23, 42, 0.8) 0px, transparent 100%);
+      background-attachment: fixed;
       color: var(--text);
-      font-family: var(--font-sans);
+      font-family: var(--font);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
+
+    /* Top Navigation Header */
     header {
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 1rem 2rem;
+      background: rgba(11, 17, 32, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -44,85 +62,204 @@
       top: 0;
       z-index: 50;
     }
-    .logo {
+
+    .brand {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      font-weight: 700;
-      font-size: 1.25rem;
-      letter-spacing: -0.02em;
+      gap: 0.85rem;
+      text-decoration: none;
+      color: white;
     }
-    .badge {
-      font-size: 0.75rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 9999px;
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #6366f1, #06b6d4);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+    }
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-tag {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 20px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
-    .badge-primary { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
-    .badge-success { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-    .badge-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
-    .badge-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
-    .nav-actions { display: flex; align-items: center; gap: 1rem; }
-    .container {
-      max-width: 1400px;
-      margin: 2rem auto;
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .nav-link:hover { color: white; }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .badge-success { background: var(--success-glow); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-success .badge-dot { background: #34d399; box-shadow: 0 0 6px #34d399; }
+    .badge-danger { background: var(--danger-glow); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge-danger .badge-dot { background: #f87171; box-shadow: 0 0 6px #f87171; }
+    .badge-warning { background: var(--warning-glow); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-warning .badge-dot { background: #fbbf24; box-shadow: 0 0 6px #fbbf24; }
+    .badge-primary { background: var(--primary-glow); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.3); }
+    .badge-primary .badge-dot { background: #a5b4fc; }
+
+    /* Layout Grid */
+    .app-container {
+      max-width: 1540px;
+      margin: 1.75rem auto;
       padding: 0 1.5rem;
       width: 100%;
       display: grid;
-      grid-template-columns: 340px 1fr;
+      grid-template-columns: 360px 1fr;
       gap: 1.5rem;
     }
+
+    /* Cards */
     .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
       padding: 1.5rem;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .card h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Form Inputs */
     .input-group { margin-bottom: 1rem; }
-    label { display: block; font-size: 0.825rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.35rem; }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.01em;
+    }
     input, select, textarea {
       width: 100%;
-      background: rgba(10, 15, 26, 0.8);
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      padding: 0.65rem 0.85rem;
+      background: rgba(8, 12, 20, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.7rem 0.9rem;
       color: var(--text);
-      font-size: 0.9rem;
+      font-size: 0.875rem;
       font-family: inherit;
-      transition: all 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
     input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 3px var(--primary-glow);
     }
+
+    /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
       color: white;
       border: none;
-      border-radius: 6px;
-      padding: 0.65rem 1rem;
+      border-radius: 8px;
+      padding: 0.7rem 1.1rem;
       font-size: 0.875rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: transform 0.15s, box-shadow 0.2s;
       width: 100%;
+      text-decoration: none;
     }
-    .btn:hover { background: var(--primary-hover); }
-    .btn-secondary { background: rgba(255, 255, 255, 0.08); border: 1px solid var(--card-border); }
-    .btn-secondary:hover { background: rgba(255, 255, 255, 0.12); }
-    .btn-danger { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
-    .btn-sm { padding: 0.35rem 0.65rem; font-size: 0.775rem; width: auto; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px var(--primary-glow);
+    }
+    .btn:active { transform: translateY(0); }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.09);
+      box-shadow: none;
+    }
+    .btn-accent {
+      background: linear-gradient(135deg, #06b6d4, #0891b2);
+    }
+    .btn-accent:hover {
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
+    }
+    .btn-sm {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.8rem;
+      width: auto;
+      border-radius: 6px;
+    }
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+
+    /* Stats Overview Row */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -130,235 +267,424 @@
       margin-bottom: 1.5rem;
     }
     .stat-card {
-      background: rgba(15, 23, 42, 0.5);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
     }
-    .stat-val { font-size: 1.5rem; font-weight: 700; color: #fff; margin-top: 0.25rem; font-family: var(--font-mono); }
-    .tabs { display: flex; gap: 0.5rem; border-bottom: 1px solid var(--card-border); margin-bottom: 1rem; }
-    .tab {
-      padding: 0.5rem 1rem;
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0; width: 4px;
+      background: var(--primary);
+      opacity: 0.6;
+    }
+    .stat-card:nth-child(2)::after { background: var(--accent); }
+    .stat-card:nth-child(3)::after { background: var(--warning); }
+    .stat-card:nth-child(4)::after { background: var(--success); }
+
+    .stat-label {
+      font-size: 0.775rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 0.4rem;
+      font-family: var(--mono);
+      letter-spacing: -0.02em;
+    }
+    .stat-meta {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 0.25rem;
+    }
+
+    /* Tabs */
+    .tabs-nav {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.25rem;
+    }
+    .tab-btn {
+      padding: 0.65rem 1.1rem;
       background: none;
       border: none;
       color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.875rem;
       cursor: pointer;
-      font-weight: 500;
-      font-size: 0.9rem;
+      position: relative;
+      transition: color 0.2s;
       border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
     }
-    .tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
-    .table-container { overflow-x: auto; max-height: 400px; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left; }
-    th { background: rgba(15, 23, 42, 0.8); color: var(--text-muted); font-weight: 600; padding: 0.75rem; border-bottom: 1px solid var(--card-border); position: sticky; top: 0; }
-    td { padding: 0.75rem; border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
-    tr:hover { background: rgba(255, 255, 255, 0.02); }
-    .mono { font-family: var(--font-mono); font-size: 0.8rem; }
-    .toast {
+    .tab-btn:hover { color: #fff; }
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* Tables */
+    .table-wrapper {
+      overflow-x: auto;
+      max-height: 480px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    thead th {
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      letter-spacing: 0.02em;
+    }
+    tbody td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text);
+    }
+    tbody tr {
+      transition: background 0.15s;
+    }
+    tbody tr:hover {
+      background: rgba(99, 102, 241, 0.04);
+    }
+    .mono {
+      font-family: var(--mono);
+      font-size: 0.825rem;
+    }
+
+    /* Progress Bar */
+    .progress-bar-bg {
+      background: rgba(255, 255, 255, 0.08);
+      height: 6px;
+      border-radius: 4px;
+      overflow: hidden;
+      width: 100%;
+      margin-top: 0.4rem;
+    }
+    .progress-bar-fill {
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+
+    /* Code & JSON Preview */
+    pre {
+      background: rgba(6, 9, 15, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem;
+      font-family: var(--mono);
+      font-size: 0.775rem;
+      color: #93c5fd;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    /* Toast Notification */
+    .toast-container {
       position: fixed;
       bottom: 2rem;
       right: 2rem;
-      background: #1e293b;
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 1rem 1.5rem;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-      font-size: 0.875rem;
-      display: none;
-      z-index: 100;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
-    pre { background: #06090e; padding: 0.75rem; border-radius: 6px; font-size: 0.75rem; font-family: var(--font-mono); overflow-x: auto; color: #a5b4fc; }
+    .toast {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      border-radius: 8px;
+      padding: 0.85rem 1.25rem;
+      color: #fff;
+      font-size: 0.875rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(12px);
+      animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- Top Navigation Bar -->
   <header>
-    <div class="logo">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-      DataFlow <span class="badge badge-primary">v1.0.0</span>
-    </div>
-    <div class="nav-actions">
-      <a href="/docs" target="_blank" style="color:var(--text-muted); text-decoration:none; font-size:0.875rem; font-weight:500;">API Docs (Swagger)</a>
-      <span id="authStatus" class="badge badge-danger">Unauthenticated</span>
+    <a href="/" class="brand">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+        </svg>
+      </div>
+      <div>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <span class="brand-title">DataFlow</span>
+          <span class="brand-tag">v1.0.0 Prod</span>
+        </div>
+      </div>
+    </a>
+
+    <div class="header-actions">
+      <a href="/docs" target="_blank" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Swagger OpenAPI
+      </a>
+      <a href="/metrics" target="_blank" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        Prometheus Metrics
+      </a>
+      <span id="authStatusBadge" class="badge badge-danger">
+        <span class="badge-dot"></span>
+        <span>Unauthenticated</span>
+      </span>
       <button id="logoutBtn" class="btn btn-secondary btn-sm" style="display:none;" onclick="logout()">Logout</button>
     </div>
   </header>
 
-  <div class="container">
-    <!-- Left Column: Controls & Auth -->
+  <!-- Main Container -->
+  <div class="app-container">
+
+    <!-- Left Column: Authentication & Batch Actions -->
     <div>
+
       <!-- Auth Card -->
       <div class="card" id="authCard">
-        <h2>Authentication</h2>
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            Tenant Authentication
+          </div>
+          <span style="font-size:0.75rem; color:var(--text-dim);">Argon2id + JWT</span>
+        </div>
         <div class="input-group">
           <label>Email Address</label>
-          <input type="email" id="authEmail" value="demo@dataflow.dev">
+          <input type="email" id="authEmail" value="demo@dataflow.dev" placeholder="developer@company.com">
         </div>
         <div class="input-group">
           <label>Password</label>
           <input type="password" id="authPassword" value="DataFlow2026!Secure">
         </div>
-        <div class="grid-2">
-          <button class="btn" onclick="login()">Login</button>
+        <div class="btn-group">
+          <button class="btn" onclick="login()">Sign In</button>
           <button class="btn btn-secondary" onclick="register()">Register</button>
         </div>
-        <button class="btn btn-secondary btn-sm" style="margin-top:0.75rem; width:100%;" onclick="quickDemoLogin()">⚡ Quick Demo Auth</button>
+        <button class="btn btn-secondary btn-sm" style="margin-top:0.75rem; width:100%; border-color:rgba(99,102,241,0.3);" onclick="quickDemoLogin()">
+          ⚡ Quick Demo Login (demo@dataflow.dev)
+        </button>
       </div>
 
-      <!-- Ingest Card -->
+      <!-- Ingestion Dispatch Card -->
       <div class="card" style="margin-top: 1.5rem;">
-        <h2>Submit Ingestion Batch</h2>
-        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">
-          Dispatches batch to asynchronous worker pipeline with risk scoring and row validation.
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            Ingestion Pipeline
+          </div>
+          <span class="badge badge-primary">Async Worker</span>
+        </div>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1.1rem; line-height:1.45;">
+          Dispatch records to background Celery workers with schema validation, heuristics risk scoring, and row error diagnostics.
         </p>
-        <button class="btn" onclick="submitSampleBatch()">🚀 Submit 5-Record Sample Batch</button>
-        <button class="btn btn-secondary" style="margin-top:0.5rem;" onclick="submitSingleTxn()">➕ Ingest Single Transaction</button>
+
+        <button class="btn btn-accent" onclick="submitSampleBatch()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          Submit 5-Record Async Batch
+        </button>
+
+        <button class="btn btn-secondary" style="margin-top:0.6rem;" onclick="submitSingleTxn()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+          Ingest Single Real-Time Txn
+        </button>
       </div>
 
-      <!-- Health Card -->
+      <!-- Telemetry Health Probe -->
       <div class="card" style="margin-top: 1.5rem;">
-        <h2>System Telemetry</h2>
-        <button class="btn btn-secondary btn-sm" style="width:100%; margin-bottom:0.75rem;" onclick="checkHealth()">Refresh Health Checks</button>
-        <pre id="healthOutput">Checking...</pre>
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+            Telemetry Health Probe
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="checkHealth()">Ping</button>
+        </div>
+        <pre id="healthJsonOutput">Checking /health/ready...</pre>
       </div>
+
     </div>
 
-    <!-- Right Column: Dashboard & Tables -->
+    <!-- Right Column: Analytics & Ledger -->
     <div>
-      <!-- Stats Row -->
+
+      <!-- KPI Metrics Overview Row -->
       <div class="stats-row">
         <div class="stat-card">
-          <label>Total Records</label>
-          <div class="stat-val" id="statTotalRecords">0</div>
+          <div class="stat-label">Total Transactions</div>
+          <div class="stat-value" id="kpiTotalRecords">0</div>
+          <div class="stat-meta">Tenant Ledger Entries</div>
         </div>
         <div class="stat-card">
-          <label>Processed Volume</label>
-          <div class="stat-val" id="statTotalVolume">$0.00</div>
+          <div class="stat-label">Processed Volume</div>
+          <div class="stat-value" id="kpiTotalVolume">$0.00</div>
+          <div class="stat-meta">Gross Transacted Value</div>
         </div>
         <div class="stat-card">
-          <label>Avg Risk Score</label>
-          <div class="stat-val" id="statAvgRisk">0.00</div>
+          <div class="stat-label">Avg Risk Score</div>
+          <div class="stat-value" id="kpiAvgRisk">0.00</div>
+          <div class="stat-meta">0.00 (Low) - 1.00 (High)</div>
         </div>
         <div class="stat-card">
-          <label>Background Jobs</label>
-          <div class="stat-val" id="statTotalJobs">0</div>
+          <div class="stat-label">Active Batch Jobs</div>
+          <div class="stat-value" id="kpiTotalJobs">0</div>
+          <div class="stat-meta">Background Worker Tasks</div>
         </div>
       </div>
 
-      <!-- Content Tabs -->
+      <!-- Main Content Card with Navigation Tabs -->
       <div class="card">
-        <div class="tabs">
-          <button class="tab active" onclick="switchTab('jobsTab', this)">Background Processing Jobs</button>
-          <button class="tab" onclick="switchTab('recordsTab', this)">Transaction Records Feed</button>
-          <button class="tab" onclick="switchTab('analyticsTab', this)">Analytics & Risk Breakdown</button>
+        <div class="tabs-nav">
+          <button class="tab-btn active" onclick="setTab('jobsView', this)">Background Processing Fleet</button>
+          <button class="tab-btn" onclick="setTab('recordsView', this)">Transaction Feed</button>
+          <button class="tab-btn" onclick="setTab('analyticsView', this)">Financial Risk Analytics</button>
         </div>
 
-        <!-- Jobs View -->
-        <div id="jobsTab">
-          <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
-            <span style="font-size:0.85rem; color:var(--text-muted);">Asynchronous background tasks and worker state</span>
-            <button class="btn btn-secondary btn-sm" onclick="loadJobs()">Refresh Jobs</button>
+        <!-- 1. Jobs View -->
+        <div id="jobsView">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <div style="font-size:0.85rem; color:var(--text-muted);">
+              Asynchronous worker execution queue with retry capability and error reporting.
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="loadJobs()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+              Refresh Jobs
+            </button>
           </div>
-          <div class="table-container">
+
+          <div class="table-wrapper">
             <table>
               <thead>
                 <tr>
                   <th>Job ID</th>
                   <th>Status</th>
-                  <th>Progress</th>
+                  <th>Progress & Errors</th>
                   <th>Retries</th>
-                  <th>Created At</th>
-                  <th>Actions</th>
+                  <th>Submitted At</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody id="jobsTableBody">
-                <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No jobs yet or unauthenticated.</td></tr>
+                <tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:2rem;">Sign in to view active background jobs.</td></tr>
               </tbody>
             </table>
           </div>
-          <div id="jobDetailsArea" style="margin-top:1rem; display:none;">
-            <label>Selected Job Diagnostics & Errors:</label>
-            <pre id="jobDetailsOutput"></pre>
+
+          <div id="jobDetailsCard" style="display:none; margin-top:1.25rem;">
+            <label style="color:#a5b4fc; font-weight:700;">Job Diagnostics & Row Error Breakdown:</label>
+            <pre id="jobDetailsPre" style="margin-top:0.4rem; max-height:220px;"></pre>
           </div>
         </div>
 
-        <!-- Records View -->
-        <div id="recordsTab" style="display:none;">
-          <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
-            <span style="font-size:0.85rem; color:var(--text-muted);">Tenant-isolated transaction ledger</span>
-            <button class="btn btn-secondary btn-sm" onclick="loadRecords()">Refresh Records</button>
+        <!-- 2. Records View -->
+        <div id="recordsView" style="display:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <div style="font-size:0.85rem; color:var(--text-muted);">
+              Multi-tenant isolated transaction feed ordered by <span class="mono">occurred_at DESC</span>.
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="loadRecords()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+              Refresh Feed
+            </button>
           </div>
-          <div class="table-container">
+
+          <div class="table-wrapper">
             <table>
               <thead>
                 <tr>
-                  <th>Txn ID</th>
+                  <th>Transaction ID</th>
                   <th>Account</th>
                   <th>Amount</th>
                   <th>Category</th>
+                  <th>Merchant</th>
                   <th>Risk</th>
                   <th>Status</th>
-                  <th>Occurred At</th>
+                  <th>Timestamp</th>
                 </tr>
               </thead>
               <tbody id="recordsTableBody">
-                <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No records loaded.</td></tr>
+                <tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:2rem;">No records loaded.</td></tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- Analytics View -->
-        <div id="analyticsTab" style="display:none;">
-          <pre id="analyticsOutput">Loading analytics...</pre>
+        <!-- 3. Analytics View -->
+        <div id="analyticsView" style="display:none;">
+          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">
+            Aggregated volume breakdowns and risk metrics calculated directly via SQLAlchemy 2.0 ORM.
+          </div>
+          <pre id="analyticsJsonPre">Loading analytics summary...</pre>
         </div>
+
       </div>
+
     </div>
+
   </div>
 
-  <div id="toast" class="toast"></div>
+  <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    let token = localStorage.getItem('dataflow_token') || '';
-    let currentUserId = localStorage.getItem('dataflow_user_id') || '';
+    let token = localStorage.getItem('dataflow_jwt') || '';
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.innerText = msg;
-      t.style.display = 'block';
-      setTimeout(() => { t.style.display = 'none'; }, 3500);
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      if (type === 'error') toast.style.borderLeftColor = 'var(--danger)';
+      if (type === 'success') toast.style.borderLeftColor = 'var(--success)';
+      toast.innerText = message;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
     }
 
-    function updateAuthBadge() {
-      const statusBadge = document.getElementById('authStatus');
+    function updateAuthUI() {
+      const badge = document.getElementById('authStatusBadge');
       const logoutBtn = document.getElementById('logoutBtn');
       if (token) {
-        statusBadge.innerText = 'Authenticated';
-        statusBadge.className = 'badge badge-success';
-        logoutBtn.style.display = 'inline-block';
+        badge.className = 'badge badge-success';
+        badge.innerHTML = '<span class="badge-dot"></span><span>Authenticated</span>';
+        logoutBtn.style.display = 'inline-flex';
       } else {
-        statusBadge.innerText = 'Unauthenticated';
-        statusBadge.className = 'badge badge-danger';
+        badge.className = 'badge badge-danger';
+        badge.innerHTML = '<span class="badge-dot"></span><span>Unauthenticated</span>';
         logoutBtn.style.display = 'none';
       }
-    }
-
-    async function register() {
-      const email = document.getElementById('authEmail').value;
-      const password = document.getElementById('authPassword').value;
-      try {
-        const res = await fetch('/api/v1/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, full_name: 'Demo User', role: 'user' })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          showToast('Account registered! Logging in...');
-          await login();
-        } else {
-          showToast(data.error ? data.error.message : 'Registration failed');
-        }
-      } catch (e) { showToast(e.message); }
     }
 
     async function login() {
@@ -373,29 +699,52 @@
         const data = await res.json();
         if (res.ok) {
           token = data.access_token;
-          currentUserId = data.user_id;
-          localStorage.setItem('dataflow_token', token);
-          localStorage.setItem('dataflow_user_id', currentUserId);
-          updateAuthBadge();
-          showToast('Successfully authenticated!');
+          localStorage.setItem('dataflow_jwt', token);
+          updateAuthUI();
+          showToast(`Welcome back, ${data.full_name}!`, 'success');
           refreshAll();
         } else {
-          showToast(data.error ? data.error.message : 'Login failed');
+          showToast(data.error ? data.error.message : 'Login failed', 'error');
         }
-      } catch (e) { showToast(e.message); }
+      } catch (e) {
+        showToast(e.message, 'error');
+      }
+    }
+
+    async function register() {
+      const email = document.getElementById('authEmail').value;
+      const password = document.getElementById('authPassword').value;
+      try {
+        const res = await fetch('/api/v1/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, full_name: 'Demo Lead', role: 'user' })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast('Account registered! Signing in...', 'success');
+          await login();
+        } else {
+          showToast(data.error ? data.error.message : 'Registration failed', 'error');
+        }
+      } catch (e) {
+        showToast(e.message, 'error');
+      }
     }
 
     async function quickDemoLogin() {
-      await register();
+      document.getElementById('authEmail').value = 'demo@dataflow.dev';
+      document.getElementById('authPassword').value = 'DataFlow2026!Secure';
+      await login();
     }
 
     function logout() {
       token = '';
-      currentUserId = '';
-      localStorage.removeItem('dataflow_token');
-      localStorage.removeItem('dataflow_user_id');
-      updateAuthBadge();
-      showToast('Logged out');
+      localStorage.removeItem('dataflow_jwt');
+      updateAuthUI();
+      showToast('Logged out successfully.');
+      document.getElementById('jobsTableBody').innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:2rem;">Sign in to view active background jobs.</td></tr>';
+      document.getElementById('recordsTableBody').innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:2rem;">No records loaded.</td></tr>';
     }
 
     async function loadJobs() {
@@ -408,29 +757,36 @@
         const tbody = document.getElementById('jobsTableBody');
         tbody.innerHTML = '';
         if (data.items && data.items.length > 0) {
-          document.getElementById('statTotalJobs').innerText = data.total_count;
-          data.items.forEach(j => {
+          document.getElementById('kpiTotalJobs').innerText = data.total_count;
+          data.items.forEach(job => {
             const tr = document.createElement('tr');
             let badgeClass = 'badge-primary';
-            if (j.status === 'completed') badgeClass = 'badge-success';
-            if (j.status === 'failed') badgeClass = 'badge-danger';
-            if (j.status === 'partially_failed') badgeClass = 'badge-warning';
+            if (job.status === 'completed') badgeClass = 'badge-success';
+            if (job.status === 'partially_failed') badgeClass = 'badge-warning';
+            if (job.status === 'failed') badgeClass = 'badge-danger';
+
+            const pct = job.total_records > 0 ? Math.round(((job.processed_records + job.failed_records) / job.total_records) * 100) : 0;
 
             tr.innerHTML = `
-              <td class="mono">${j.id.substring(0, 8)}...</td>
-              <td><span class="badge ${badgeClass}">${j.status}</span></td>
-              <td class="mono">${j.processed_records}/${j.total_records} (err: ${j.failed_records})</td>
-              <td>${j.retry_count}/${j.max_retries}</td>
-              <td style="font-size:0.75rem; color:var(--text-muted);">${new Date(j.created_at).toLocaleTimeString()}</td>
+              <td class="mono" style="color:#a5b4fc; font-weight:600;">${job.id.substring(0, 8)}...</td>
+              <td><span class="badge ${badgeClass}"><span class="badge-dot"></span>${job.status}</span></td>
               <td>
-                <button class="btn btn-secondary btn-sm" onclick="inspectJob('${j.id}')">Inspect</button>
-                ${(j.status === 'failed' || j.status === 'partially_failed') ? `<button class="btn btn-secondary btn-sm" onclick="retryJob('${j.id}')">Retry</button>` : ''}
+                <div style="font-size:0.8rem; font-weight:600;">${job.processed_records}/${job.total_records} (Errors: ${job.failed_records})</div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${pct}%"></div></div>
+              </td>
+              <td>${job.retry_count}/${job.max_retries}</td>
+              <td style="font-size:0.775rem; color:var(--text-muted);">${new Date(job.created_at).toLocaleTimeString()}</td>
+              <td>
+                <div style="display:flex; gap:0.4rem;">
+                  <button class="btn btn-secondary btn-sm" onclick="inspectJob('${job.id}')">Inspect</button>
+                  ${(job.status === 'failed' || job.status === 'partially_failed') ? `<button class="btn btn-secondary btn-sm" onclick="retryJob('${job.id}')">Retry</button>` : ''}
+                </div>
               </td>
             `;
             tbody.appendChild(tr);
           });
         } else {
-          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No processing jobs recorded.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:2rem;">No jobs registered yet. Click Submit Sample Batch!</td></tr>';
         }
       } catch (e) { console.error(e); }
     }
@@ -442,9 +798,9 @@
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
-        document.getElementById('jobDetailsArea').style.display = 'block';
-        document.getElementById('jobDetailsOutput').innerText = JSON.stringify(data, null, 2);
-      } catch (e) { showToast(e.message); }
+        document.getElementById('jobDetailsCard').style.display = 'block';
+        document.getElementById('jobDetailsPre').innerText = JSON.stringify(data, null, 2);
+      } catch (e) { showToast(e.message, 'error'); }
     }
 
     async function retryJob(jobId) {
@@ -456,18 +812,18 @@
         });
         const data = await res.json();
         if (res.ok) {
-          showToast(`Job ${jobId.substring(0,8)} queued for retry!`);
+          showToast(`Job ${jobId.substring(0,8)} queued for retry attempt!`, 'success');
           loadJobs();
         } else {
-          showToast(data.error ? data.error.message : 'Retry failed');
+          showToast(data.error ? data.error.message : 'Retry failed', 'error');
         }
-      } catch (e) { showToast(e.message); }
+      } catch (e) { showToast(e.message, 'error'); }
     }
 
     async function loadRecords() {
       if (!token) return;
       try {
-        const res = await fetch('/api/v1/records?page=1&page_size=20&sort_by=occurred_at&sort_order=desc', {
+        const res = await fetch('/api/v1/records?page=1&page_size=25&sort_by=occurred_at&sort_order=desc', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -482,18 +838,19 @@
             if (r.status === 'pending') badgeClass = 'badge-primary';
 
             tr.innerHTML = `
-              <td class="mono">${r.transaction_id}</td>
-              <td class="mono">${r.account_id}</td>
-              <td class="mono" style="font-weight:600;">$${parseFloat(r.amount).toFixed(2)}</td>
-              <td>${r.category}</td>
-              <td class="mono">${r.risk_score}</td>
-              <td><span class="badge ${badgeClass}">${r.status}</span></td>
-              <td style="font-size:0.75rem; color:var(--text-muted);">${new Date(r.occurred_at).toLocaleTimeString()}</td>
+              <td class="mono" style="font-weight:600; color:#cbd5e1;">${r.transaction_id}</td>
+              <td class="mono" style="color:var(--text-muted);">${r.account_id}</td>
+              <td class="mono" style="font-weight:700; color:#fff;">$${parseFloat(r.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+              <td style="text-transform:capitalize;">${r.category}</td>
+              <td style="color:var(--text-muted);">${r.merchant_name}</td>
+              <td><span class="mono" style="font-size:0.775rem; color:${r.risk_score > 0.6 ? '#f87171' : '#34d399'}">${r.risk_score.toFixed(2)}</span></td>
+              <td><span class="badge ${badgeClass}"><span class="badge-dot"></span>${r.status}</span></td>
+              <td style="font-size:0.75rem; color:var(--text-dim);">${new Date(r.occurred_at).toLocaleTimeString()}</td>
             `;
             tbody.appendChild(tr);
           });
         } else {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No records found.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:2rem;">No transaction records found.</td></tr>';
         }
       } catch (e) { console.error(e); }
     }
@@ -506,22 +863,23 @@
         });
         const data = await res.json();
         if (res.ok) {
-          document.getElementById('statTotalRecords').innerText = data.total_records;
-          document.getElementById('statTotalVolume').innerText = '$' + parseFloat(data.total_amount).toLocaleString();
-          document.getElementById('statAvgRisk').innerText = data.average_risk_score.toFixed(2);
-          document.getElementById('analyticsOutput').innerText = JSON.stringify(data, null, 2);
+          document.getElementById('kpiTotalRecords').innerText = data.total_records.toLocaleString();
+          document.getElementById('kpiTotalVolume').innerText = '$' + parseFloat(data.total_amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+          document.getElementById('kpiAvgRisk').innerText = data.average_risk_score.toFixed(2);
+          document.getElementById('analyticsJsonPre').innerText = JSON.stringify(data, null, 2);
         }
       } catch (e) { console.error(e); }
     }
 
     async function submitSampleBatch() {
-      if (!token) { showToast('Please login first!'); return; }
+      if (!token) { showToast('Please sign in first!', 'error'); return; }
+      const ts = Date.now();
       const sample = [
-        { transaction_id: 'txn_' + Date.now() + '_1', account_id: 'acc_101', amount: 45.50, currency: 'USD', category: 'payment', merchant_name: 'Coffee Shop', metadata: { terminal: 'pos_1' } },
-        { transaction_id: 'txn_' + Date.now() + '_2', account_id: 'acc_102', amount: 15400.00, currency: 'USD', category: 'transfer', merchant_name: 'Wire Transfer', metadata: { is_vpn: true } },
-        { transaction_id: 'txn_' + Date.now() + '_3', account_id: 'acc_103', amount: 120.00, currency: 'USD', category: 'payment', merchant_name: 'Supermarket' },
-        { transaction_id: 'txn_' + Date.now() + '_4', account_id: 'acc_104', amount: 62000.00, currency: 'USD', category: 'withdrawal', merchant_name: 'Crypto Exchange', metadata: { is_tor: true } },
-        { transaction_id: 'txn_' + Date.now() + '_5', account_id: 'acc_105', amount: -99.00, currency: 'INVALID_CURRENCY', category: 'invalid_category', merchant_name: 'Invalid Item' } // intentional failure row
+        { transaction_id: `txn_${ts}_01`, account_id: 'acc_retail_01', amount: 89.99, currency: 'USD', category: 'payment', merchant_name: 'Stripe Terminal POS' },
+        { transaction_id: `txn_${ts}_02`, account_id: 'acc_corporate_02', amount: 18500.00, currency: 'USD', category: 'transfer', merchant_name: 'Interbank Wire', metadata: { is_vpn: true } },
+        { transaction_id: `txn_${ts}_03`, account_id: 'acc_retail_03', amount: 245.50, currency: 'USD', category: 'payment', merchant_name: 'AWS Cloud Services' },
+        { transaction_id: `txn_${ts}_04`, account_id: 'acc_crypto_04', amount: 65000.00, currency: 'USD', category: 'withdrawal', merchant_name: 'Crypto Liquidity Pool', metadata: { is_tor: true } },
+        { transaction_id: `txn_${ts}_05`, account_id: 'acc_faulty_05', amount: -50.00, currency: 'BAD_CURRENCY', category: 'invalid_category', merchant_name: 'Faulty Vendor' } // Deliberate row error
       ];
       try {
         const res = await fetch('/api/v1/jobs', {
@@ -531,23 +889,24 @@
         });
         const data = await res.json();
         if (res.ok) {
-          showToast(`Job ${data.id.substring(0,8)} dispatched to background worker!`);
-          setTimeout(refreshAll, 1200);
+          showToast(`Batch job #${data.id.substring(0,8)} dispatched to background worker!`, 'success');
+          setTimeout(refreshAll, 1000);
         } else {
-          showToast(data.error ? data.error.message : 'Submission failed');
+          showToast(data.error ? data.error.message : 'Submission failed', 'error');
         }
-      } catch (e) { showToast(e.message); }
+      } catch (e) { showToast(e.message, 'error'); }
     }
 
     async function submitSingleTxn() {
-      if (!token) { showToast('Please login first!'); return; }
+      if (!token) { showToast('Please sign in first!', 'error'); return; }
+      const ts = Date.now();
       const single = {
-        transaction_id: 'txn_' + Date.now(),
-        account_id: 'acc_200',
-        amount: 285.00,
+        transaction_id: `txn_live_${ts}`,
+        account_id: 'acc_priority',
+        amount: parseFloat((Math.random() * 500 + 10).toFixed(2)),
         currency: 'USD',
         category: 'payment',
-        merchant_name: 'Enterprise Cloud'
+        merchant_name: 'Digital Ocean Services'
       };
       try {
         const res = await fetch('/api/v1/records', {
@@ -557,30 +916,30 @@
         });
         const data = await res.json();
         if (res.ok) {
-          showToast('Transaction record ingested!');
+          showToast(`Ingested ${data.transaction_id} ($${data.amount}) - Status: ${data.status}`, 'success');
           refreshAll();
         } else {
-          showToast(data.error ? data.error.message : 'Failed');
+          showToast(data.error ? data.error.message : 'Ingest failed', 'error');
         }
-      } catch (e) { showToast(e.message); }
+      } catch (e) { showToast(e.message, 'error'); }
     }
 
     async function checkHealth() {
       try {
         const res = await fetch('/health/ready');
         const data = await res.json();
-        document.getElementById('healthOutput').innerText = JSON.stringify(data, null, 2);
+        document.getElementById('healthJsonOutput').innerText = JSON.stringify(data, null, 2);
       } catch (e) {
-        document.getElementById('healthOutput').innerText = 'Health check failed: ' + e.message;
+        document.getElementById('healthJsonOutput').innerText = 'Health check failed: ' + e.message;
       }
     }
 
-    function switchTab(tabId, btn) {
-      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    function setTab(viewId, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      document.getElementById('jobsTab').style.display = tabId === 'jobsTab' ? 'block' : 'none';
-      document.getElementById('recordsTab').style.display = tabId === 'recordsTab' ? 'block' : 'none';
-      document.getElementById('analyticsTab').style.display = tabId === 'analyticsTab' ? 'block' : 'none';
+      document.getElementById('jobsView').style.display = viewId === 'jobsView' ? 'block' : 'none';
+      document.getElementById('recordsView').style.display = viewId === 'recordsView' ? 'block' : 'none';
+      document.getElementById('analyticsView').style.display = viewId === 'analyticsView' ? 'block' : 'none';
     }
 
     function refreshAll() {
@@ -590,9 +949,23 @@
       checkHealth();
     }
 
-    updateAuthBadge();
+    // Auto-initialize
+    updateAuthUI();
     checkHealth();
-    if (token) refreshAll();
+    if (token) {
+      refreshAll();
+    } else {
+      // Auto-login demo account on first load
+      quickDemoLogin();
+    }
+
+    // Periodic auto-poll every 4 seconds
+    setInterval(() => {
+      if (token) {
+        loadJobs();
+        loadAnalytics();
+      }
+    }, 4000);
   </script>
 </body>
 </html>

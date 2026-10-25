@@ -33,31 +33,38 @@ async def seed():
         await conn.run_sync(Base.metadata.create_all)
 
     async with async_session_factory() as session:
-        # Check if users already exist
-        res = await session.execute(select(User).limit(1))
-        if res.scalar_one_or_none():
-            print("Database already contains users. Skipping seed.")
+        # Check if demo user already exists
+        res = await session.execute(select(User).where(User.email == "demo@dataflow.dev"))
+        demo_user = res.scalar_one_or_none()
+        if demo_user:
+            print("Demo user already exists.")
+        else:
+            print("Seeding demo and admin accounts...")
+            demo_user = User(
+                id=uuid.UUID("11111111-1111-1111-1111-111111111111"),
+                email="demo@dataflow.dev",
+                hashed_password=hash_password("DataFlow2026!Secure"),
+                full_name="Demo Lead",
+                role="user",
+                is_active=True,
+            )
+            admin_user = User(
+                id=uuid.UUID("22222222-2222-2222-2222-222222222222"),
+                email="admin@dataflow.dev",
+                hashed_password=hash_password("DataFlowAdmin2026!"),
+                full_name="Security Admin",
+                role="admin",
+                is_active=True,
+            )
+            session.add_all([demo_user, admin_user])
+            await session.commit()
+        # Check if transaction records already exist for demo user
+        res_rec = await session.execute(
+            select(TransactionRecord).where(TransactionRecord.user_id == demo_user.id).limit(1)
+        )
+        if res_rec.scalar_one_or_none():
+            print("Records for demo user already exist.")
             return
-
-        print("Seeding demo and admin accounts...")
-        demo_user = User(
-            id=uuid.UUID("11111111-1111-1111-1111-111111111111"),
-            email="demo@dataflow.dev",
-            hashed_password=hash_password("DataFlow2026!Secure"),
-            full_name="Demo User",
-            role="user",
-            is_active=True,
-        )
-        admin_user = User(
-            id=uuid.UUID("22222222-2222-2222-2222-222222222222"),
-            email="admin@dataflow.dev",
-            hashed_password=hash_password("DataFlowAdmin2026!"),
-            full_name="Security Admin",
-            role="admin",
-            is_active=True,
-        )
-        session.add_all([demo_user, admin_user])
-        await session.flush()
 
         print("Generating 1,000 synthetic transaction records for demo user...")
         records = []

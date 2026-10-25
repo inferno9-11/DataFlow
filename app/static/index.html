@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataFlow | Production-Grade Ingestion & Processing Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(22, 30, 49, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --primary-glow: rgba(59, 130, 246, 0.35);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(circle at top right, #131b2e 0%, #090d16 100%);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-primary { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .badge-success { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .nav-actions { display: flex; align-items: center; gap: 1rem; }
+    .container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 1.5rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+    .card h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
+    .input-group { margin-bottom: 1rem; }
+    label { display: block; font-size: 0.825rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.35rem; }
+    input, select, textarea {
+      width: 100%;
+      background: rgba(10, 15, 26, 0.8);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.65rem 0.85rem;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0.65rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+    }
+    .btn:hover { background: var(--primary-hover); }
+    .btn-secondary { background: rgba(255, 255, 255, 0.08); border: 1px solid var(--card-border); }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.12); }
+    .btn-danger { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .btn-sm { padding: 0.35rem 0.65rem; font-size: 0.775rem; width: auto; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .stat-val { font-size: 1.5rem; font-weight: 700; color: #fff; margin-top: 0.25rem; font-family: var(--font-mono); }
+    .tabs { display: flex; gap: 0.5rem; border-bottom: 1px solid var(--card-border); margin-bottom: 1rem; }
+    .tab {
+      padding: 0.5rem 1rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.9rem;
+      border-bottom: 2px solid transparent;
+    }
+    .tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
+    .table-container { overflow-x: auto; max-height: 400px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left; }
+    th { background: rgba(15, 23, 42, 0.8); color: var(--text-muted); font-weight: 600; padding: 0.75rem; border-bottom: 1px solid var(--card-border); position: sticky; top: 0; }
+    td { padding: 0.75rem; border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
+    tr:hover { background: rgba(255, 255, 255, 0.02); }
+    .mono { font-family: var(--font-mono); font-size: 0.8rem; }
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      font-size: 0.875rem;
+      display: none;
+      z-index: 100;
+    }
+    pre { background: #06090e; padding: 0.75rem; border-radius: 6px; font-size: 0.75rem; font-family: var(--font-mono); overflow-x: auto; color: #a5b4fc; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      DataFlow <span class="badge badge-primary">v1.0.0</span>
+    </div>
+    <div class="nav-actions">
+      <a href="/docs" target="_blank" style="color:var(--text-muted); text-decoration:none; font-size:0.875rem; font-weight:500;">API Docs (Swagger)</a>
+      <span id="authStatus" class="badge badge-danger">Unauthenticated</span>
+      <button id="logoutBtn" class="btn btn-secondary btn-sm" style="display:none;" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Left Column: Controls & Auth -->
+    <div>
+      <!-- Auth Card -->
+      <div class="card" id="authCard">
+        <h2>Authentication</h2>
+        <div class="input-group">
+          <label>Email Address</label>
+          <input type="email" id="authEmail" value="demo@dataflow.dev">
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="authPassword" value="DataFlow2026!Secure">
+        </div>
+        <div class="grid-2">
+          <button class="btn" onclick="login()">Login</button>
+          <button class="btn btn-secondary" onclick="register()">Register</button>
+        </div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:0.75rem; width:100%;" onclick="quickDemoLogin()">⚡ Quick Demo Auth</button>
+      </div>
+
+      <!-- Ingest Card -->
+      <div class="card" style="margin-top: 1.5rem;">
+        <h2>Submit Ingestion Batch</h2>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">
+          Dispatches batch to asynchronous worker pipeline with risk scoring and row validation.
+        </p>
+        <button class="btn" onclick="submitSampleBatch()">🚀 Submit 5-Record Sample Batch</button>
+        <button class="btn btn-secondary" style="margin-top:0.5rem;" onclick="submitSingleTxn()">➕ Ingest Single Transaction</button>
+      </div>
+
+      <!-- Health Card -->
+      <div class="card" style="margin-top: 1.5rem;">
+        <h2>System Telemetry</h2>
+        <button class="btn btn-secondary btn-sm" style="width:100%; margin-bottom:0.75rem;" onclick="checkHealth()">Refresh Health Checks</button>
+        <pre id="healthOutput">Checking...</pre>
+      </div>
+    </div>
+
+    <!-- Right Column: Dashboard & Tables -->
+    <div>
+      <!-- Stats Row -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <label>Total Records</label>
+          <div class="stat-val" id="statTotalRecords">0</div>
+        </div>
+        <div class="stat-card">
+          <label>Processed Volume</label>
+          <div class="stat-val" id="statTotalVolume">$0.00</div>
+        </div>
+        <div class="stat-card">
+          <label>Avg Risk Score</label>
+          <div class="stat-val" id="statAvgRisk">0.00</div>
+        </div>
+        <div class="stat-card">
+          <label>Background Jobs</label>
+          <div class="stat-val" id="statTotalJobs">0</div>
+        </div>
+      </div>
+
+      <!-- Content Tabs -->
+      <div class="card">
+        <div class="tabs">
+          <button class="tab active" onclick="switchTab('jobsTab', this)">Background Processing Jobs</button>
+          <button class="tab" onclick="switchTab('recordsTab', this)">Transaction Records Feed</button>
+          <button class="tab" onclick="switchTab('analyticsTab', this)">Analytics & Risk Breakdown</button>
+        </div>
+
+        <!-- Jobs View -->
+        <div id="jobsTab">
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
+            <span style="font-size:0.85rem; color:var(--text-muted);">Asynchronous background tasks and worker state</span>
+            <button class="btn btn-secondary btn-sm" onclick="loadJobs()">Refresh Jobs</button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Job ID</th>
+                  <th>Status</th>
+                  <th>Progress</th>
+                  <th>Retries</th>
+                  <th>Created At</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="jobsTableBody">
+                <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No jobs yet or unauthenticated.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="jobDetailsArea" style="margin-top:1rem; display:none;">
+            <label>Selected Job Diagnostics & Errors:</label>
+            <pre id="jobDetailsOutput"></pre>
+          </div>
+        </div>
+
+        <!-- Records View -->
+        <div id="recordsTab" style="display:none;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
+            <span style="font-size:0.85rem; color:var(--text-muted);">Tenant-isolated transaction ledger</span>
+            <button class="btn btn-secondary btn-sm" onclick="loadRecords()">Refresh Records</button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Txn ID</th>
+                  <th>Account</th>
+                  <th>Amount</th>
+                  <th>Category</th>
+                  <th>Risk</th>
+                  <th>Status</th>
+                  <th>Occurred At</th>
+                </tr>
+              </thead>
+              <tbody id="recordsTableBody">
+                <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No records loaded.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Analytics View -->
+        <div id="analyticsTab" style="display:none;">
+          <pre id="analyticsOutput">Loading analytics...</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    let token = localStorage.getItem('dataflow_token') || '';
+    let currentUserId = localStorage.getItem('dataflow_user_id') || '';
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3500);
+    }
+
+    function updateAuthBadge() {
+      const statusBadge = document.getElementById('authStatus');
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (token) {
+        statusBadge.innerText = 'Authenticated';
+        statusBadge.className = 'badge badge-success';
+        logoutBtn.style.display = 'inline-block';
+      } else {
+        statusBadge.innerText = 'Unauthenticated';
+        statusBadge.className = 'badge badge-danger';
+        logoutBtn.style.display = 'none';
+      }
+    }
+
+    async function register() {
+      const email = document.getElementById('authEmail').value;
+      const password = document.getElementById('authPassword').value;
+      try {
+        const res = await fetch('/api/v1/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, full_name: 'Demo User', role: 'user' })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast('Account registered! Logging in...');
+          await login();
+        } else {
+          showToast(data.error ? data.error.message : 'Registration failed');
+        }
+      } catch (e) { showToast(e.message); }
+    }
+
+    async function login() {
+      const email = document.getElementById('authEmail').value;
+      const password = document.getElementById('authPassword').value;
+      try {
+        const res = await fetch('/api/v1/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          token = data.access_token;
+          currentUserId = data.user_id;
+          localStorage.setItem('dataflow_token', token);
+          localStorage.setItem('dataflow_user_id', currentUserId);
+          updateAuthBadge();
+          showToast('Successfully authenticated!');
+          refreshAll();
+        } else {
+          showToast(data.error ? data.error.message : 'Login failed');
+        }
+      } catch (e) { showToast(e.message); }
+    }
+
+    async function quickDemoLogin() {
+      await register();
+    }
+
+    function logout() {
+      token = '';
+      currentUserId = '';
+      localStorage.removeItem('dataflow_token');
+      localStorage.removeItem('dataflow_user_id');
+      updateAuthBadge();
+      showToast('Logged out');
+    }
+
+    async function loadJobs() {
+      if (!token) return;
+      try {
+        const res = await fetch('/api/v1/jobs?page=1&page_size=20', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        const tbody = document.getElementById('jobsTableBody');
+        tbody.innerHTML = '';
+        if (data.items && data.items.length > 0) {
+          document.getElementById('statTotalJobs').innerText = data.total_count;
+          data.items.forEach(j => {
+            const tr = document.createElement('tr');
+            let badgeClass = 'badge-primary';
+            if (j.status === 'completed') badgeClass = 'badge-success';
+            if (j.status === 'failed') badgeClass = 'badge-danger';
+            if (j.status === 'partially_failed') badgeClass = 'badge-warning';
+
+            tr.innerHTML = `
+              <td class="mono">${j.id.substring(0, 8)}...</td>
+              <td><span class="badge ${badgeClass}">${j.status}</span></td>
+              <td class="mono">${j.processed_records}/${j.total_records} (err: ${j.failed_records})</td>
+              <td>${j.retry_count}/${j.max_retries}</td>
+              <td style="font-size:0.75rem; color:var(--text-muted);">${new Date(j.created_at).toLocaleTimeString()}</td>
+              <td>
+                <button class="btn btn-secondary btn-sm" onclick="inspectJob('${j.id}')">Inspect</button>
+                ${(j.status === 'failed' || j.status === 'partially_failed') ? `<button class="btn btn-secondary btn-sm" onclick="retryJob('${j.id}')">Retry</button>` : ''}
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        } else {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No processing jobs recorded.</td></tr>';
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    async function inspectJob(jobId) {
+      if (!token) return;
+      try {
+        const res = await fetch(`/api/v1/jobs/${jobId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        document.getElementById('jobDetailsArea').style.display = 'block';
+        document.getElementById('jobDetailsOutput').innerText = JSON.stringify(data, null, 2);
+      } catch (e) { showToast(e.message); }
+    }
+
+    async function retryJob(jobId) {
+      if (!token) return;
+      try {
+        const res = await fetch(`/api/v1/jobs/${jobId}/retry`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast(`Job ${jobId.substring(0,8)} queued for retry!`);
+          loadJobs();
+        } else {
+          showToast(data.error ? data.error.message : 'Retry failed');
+        }
+      } catch (e) { showToast(e.message); }
+    }
+
+    async function loadRecords() {
+      if (!token) return;
+      try {
+        const res = await fetch('/api/v1/records?page=1&page_size=20&sort_by=occurred_at&sort_order=desc', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        const tbody = document.getElementById('recordsTableBody');
+        tbody.innerHTML = '';
+        if (data.items && data.items.length > 0) {
+          data.items.forEach(r => {
+            const tr = document.createElement('tr');
+            let badgeClass = 'badge-success';
+            if (r.status === 'flagged') badgeClass = 'badge-warning';
+            if (r.status === 'rejected') badgeClass = 'badge-danger';
+            if (r.status === 'pending') badgeClass = 'badge-primary';
+
+            tr.innerHTML = `
+              <td class="mono">${r.transaction_id}</td>
+              <td class="mono">${r.account_id}</td>
+              <td class="mono" style="font-weight:600;">$${parseFloat(r.amount).toFixed(2)}</td>
+              <td>${r.category}</td>
+              <td class="mono">${r.risk_score}</td>
+              <td><span class="badge ${badgeClass}">${r.status}</span></td>
+              <td style="font-size:0.75rem; color:var(--text-muted);">${new Date(r.occurred_at).toLocaleTimeString()}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        } else {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No records found.</td></tr>';
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadAnalytics() {
+      if (!token) return;
+      try {
+        const res = await fetch('/api/v1/analytics/summary', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (res.ok) {
+          document.getElementById('statTotalRecords').innerText = data.total_records;
+          document.getElementById('statTotalVolume').innerText = '$' + parseFloat(data.total_amount).toLocaleString();
+          document.getElementById('statAvgRisk').innerText = data.average_risk_score.toFixed(2);
+          document.getElementById('analyticsOutput').innerText = JSON.stringify(data, null, 2);
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    async function submitSampleBatch() {
+      if (!token) { showToast('Please login first!'); return; }
+      const sample = [
+        { transaction_id: 'txn_' + Date.now() + '_1', account_id: 'acc_101', amount: 45.50, currency: 'USD', category: 'payment', merchant_name: 'Coffee Shop', metadata: { terminal: 'pos_1' } },
+        { transaction_id: 'txn_' + Date.now() + '_2', account_id: 'acc_102', amount: 15400.00, currency: 'USD', category: 'transfer', merchant_name: 'Wire Transfer', metadata: { is_vpn: true } },
+        { transaction_id: 'txn_' + Date.now() + '_3', account_id: 'acc_103', amount: 120.00, currency: 'USD', category: 'payment', merchant_name: 'Supermarket' },
+        { transaction_id: 'txn_' + Date.now() + '_4', account_id: 'acc_104', amount: 62000.00, currency: 'USD', category: 'withdrawal', merchant_name: 'Crypto Exchange', metadata: { is_tor: true } },
+        { transaction_id: 'txn_' + Date.now() + '_5', account_id: 'acc_105', amount: -99.00, currency: 'INVALID_CURRENCY', category: 'invalid_category', merchant_name: 'Invalid Item' } // intentional failure row
+      ];
+      try {
+        const res = await fetch('/api/v1/jobs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ records: sample, job_type: 'bulk_transaction_ingest' })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast(`Job ${data.id.substring(0,8)} dispatched to background worker!`);
+          setTimeout(refreshAll, 1200);
+        } else {
+          showToast(data.error ? data.error.message : 'Submission failed');
+        }
+      } catch (e) { showToast(e.message); }
+    }
+
+    async function submitSingleTxn() {
+      if (!token) { showToast('Please login first!'); return; }
+      const single = {
+        transaction_id: 'txn_' + Date.now(),
+        account_id: 'acc_200',
+        amount: 285.00,
+        currency: 'USD',
+        category: 'payment',
+        merchant_name: 'Enterprise Cloud'
+      };
+      try {
+        const res = await fetch('/api/v1/records', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify(single)
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast('Transaction record ingested!');
+          refreshAll();
+        } else {
+          showToast(data.error ? data.error.message : 'Failed');
+        }
+      } catch (e) { showToast(e.message); }
+    }
+
+    async function checkHealth() {
+      try {
+        const res = await fetch('/health/ready');
+        const data = await res.json();
+        document.getElementById('healthOutput').innerText = JSON.stringify(data, null, 2);
+      } catch (e) {
+        document.getElementById('healthOutput').innerText = 'Health check failed: ' + e.message;
+      }
+    }
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('jobsTab').style.display = tabId === 'jobsTab' ? 'block' : 'none';
+      document.getElementById('recordsTab').style.display = tabId === 'recordsTab' ? 'block' : 'none';
+      document.getElementById('analyticsTab').style.display = tabId === 'analyticsTab' ? 'block' : 'none';
+    }
+
+    function refreshAll() {
+      loadJobs();
+      loadRecords();
+      loadAnalytics();
+      checkHealth();
+    }
+
+    updateAuthBadge();
+    checkHealth();
+    if (token) refreshAll();
+  </script>
+</body>
+</html>

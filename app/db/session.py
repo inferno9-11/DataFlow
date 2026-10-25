@@ -1,10 +1,8 @@
-from collections.abc import AsyncGenerator
-
+from typing import AsyncGenerator
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import NullPool, QueuePool, StaticPool
-
 from app.core.config import get_settings
 from app.core.logging import get_logger
 
@@ -27,9 +25,9 @@ if is_sqlite:
         }
     )
 else:
+    # SQLAlchemy asyncpg automatically wraps QueuePool into AsyncAdaptedQueuePool
     engine_kwargs.update(
         {
-            "poolclass": QueuePool,
             "pool_size": settings.DB_POOL_SIZE,
             "max_overflow": settings.DB_MAX_OVERFLOW,
             "pool_timeout": settings.DB_POOL_TIMEOUT,

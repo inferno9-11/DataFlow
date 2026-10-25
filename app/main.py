@@ -29,11 +29,37 @@ async def lifespan(app: FastAPI):
         f"Starting {settings.APP_NAME} v{settings.APP_VERSION} [{settings.ENVIRONMENT.upper()} mode]"
     )
 
-    # In local development or test SQLite environments, ensure tables are created
+    # In local development, test, or serverless SQLite environments, ensure tables are created
     if "sqlite" in settings.DATABASE_URL.lower():
         async with async_engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
         logger.info("SQLite database tables verified/created for local development/testing.")
+
+        try:
+            import uuid
+
+            from sqlalchemy import select
+
+            from app.core.security import hash_password
+            from app.db.session import async_session_factory
+            from app.models.user import User
+
+            async with async_session_factory() as session:
+                res = await session.execute(select(User).where(User.email == "demo@dataflow.dev"))
+                if not res.scalar_one_or_none():
+                    demo_user = User(
+                        id=uuid.UUID("11111111-1111-1111-1111-111111111111"),
+                        email="demo@dataflow.dev",
+                        hashed_password=hash_password("DataFlow2026!Secure"),
+                        full_name="Demo Lead",
+                        role="user",
+                        is_active=True,
+                    )
+                    session.add(demo_user)
+                    await session.commit()
+                    logger.info("Auto-initialized demo user on startup.")
+        except Exception as e:
+            logger.warning(f"Could not verify/seed demo user on startup: {e}")
 
     yield
 

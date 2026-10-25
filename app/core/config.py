@@ -1,3 +1,4 @@
+import os
 from functools import lru_cache
 
 from pydantic import Field, field_validator
@@ -42,6 +43,16 @@ class Settings(BaseSettings):
     DB_MAX_OVERFLOW: int = 10
     DB_POOL_TIMEOUT: int = 30
     DB_ECHO: bool = False
+
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def assemble_database_url(cls, v):
+        if os.environ.get("VERCEL"):
+            # When deploying on Vercel without an external managed Postgres,
+            # use writable /tmp directory for serverless SQLite persistence
+            if not v or "sqlite" in str(v).lower():
+                return "sqlite+aiosqlite:////tmp/dataflow.db"
+        return v
 
     # Redis & Celery
     REDIS_URL: str = "redis://localhost:6379/0"

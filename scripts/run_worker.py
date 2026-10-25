@@ -1,9 +1,8 @@
 import asyncio
-import os
 import signal
-import sys
-import time
+
 from sqlalchemy import select
+
 from app.core.config import get_settings
 from app.core.logging import get_logger, setup_logging
 from app.db.session import async_session_factory
@@ -30,7 +29,9 @@ async def run_standalone_poller():
     where a separate Celery daemon is not active.
     """
     logger.info("Starting DataFlow standalone background job processor...")
-    logger.info(f"Connected to database: {settings.DATABASE_URL.split('@')[-1] if '@' in settings.DATABASE_URL else 'local'}")
+    logger.info(
+        f"Connected to database: {settings.DATABASE_URL.split('@')[-1] if '@' in settings.DATABASE_URL else 'local'}"
+    )
 
     while not _shutdown_requested:
         try:

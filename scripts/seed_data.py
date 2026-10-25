@@ -1,9 +1,11 @@
 import asyncio
 import random
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
+
 from sqlalchemy import select
+
 from app.core.security import hash_password
 from app.db.base import Base
 from app.db.session import async_engine, async_session_factory
@@ -59,7 +61,7 @@ async def seed():
 
         print("Generating 1,000 synthetic transaction records for demo user...")
         records = []
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         for i in range(1, 1001):
             occurred = now - timedelta(days=random.randint(0, 90), seconds=random.randint(0, 86400))

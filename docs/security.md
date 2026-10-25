@@ -32,8 +32,7 @@ DataFlow prevents IDOR at the architectural level:
 3. Every SQL query explicitly binds `WHERE user_id = :uid`:
    ```python
    stmt = select(TransactionRecord).where(
-       TransactionRecord.id == record_id,
-       TransactionRecord.user_id == current_user.id
+       TransactionRecord.id == record_id, TransactionRecord.user_id == current_user.id
    )
    ```
 4. If a user queries a record ID belonging to another tenant, the repository returns `None`, and the API responds with `404 NOT_FOUND` (preventing information disclosure of object existence).

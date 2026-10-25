@@ -51,10 +51,10 @@ SEARCH records USING INDEX ix_records_user_occurred (user_id=?)
 In `app/core/config.py`, database pooling is configured with production-grade defaults:
 
 ```python
-DB_POOL_SIZE = 20         # 20 steady-state persistent connections
-DB_MAX_OVERFLOW = 10      # Up to 10 surge connections under heavy traffic spikes
-DB_POOL_TIMEOUT = 30      # Max seconds a thread waits for an available connection
-pool_pre_ping = True      # Tests socket connectivity before reusing pooled connections
+DB_POOL_SIZE = 20  # 20 steady-state persistent connections
+DB_MAX_OVERFLOW = 10  # Up to 10 surge connections under heavy traffic spikes
+DB_POOL_TIMEOUT = 30  # Max seconds a thread waits for an available connection
+pool_pre_ping = True  # Tests socket connectivity before reusing pooled connections
 ```
 
 ---

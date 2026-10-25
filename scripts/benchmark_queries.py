@@ -3,14 +3,15 @@ import os
 import platform
 import time
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
+
 import psutil
-from sqlalchemy import Index, desc, select, text
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy import desc, select, text
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
 from app.db.base import Base
 from app.models.record import TransactionRecord
-from app.models.user import User
 
 BENCHMARK_DB = os.path.abspath("./benchmark_dataflow.db")
 DATABASE_URL = f"sqlite+aiosqlite:///{BENCHMARK_DB}"
@@ -42,7 +43,7 @@ async def run_benchmark():
         await conn.run_sync(Base.metadata.create_all)
 
     user_id = uuid.uuid4()
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     # 2. Insert synthetic records
     print(f"Generating and bulk inserting {NUM_RECORDS:,} records...")
@@ -115,7 +116,9 @@ async def run_benchmark():
             latencies_no_index.append((time.perf_counter() - start) * 1000)
 
     # 4. Create Composite Index
-    print("Creating composite index: ix_records_user_occurred ON records(user_id, occurred_at DESC)...")
+    print(
+        "Creating composite index: ix_records_user_occurred ON records(user_id, occurred_at DESC)..."
+    )
     t_idx_start = time.time()
     async with engine.begin() as conn:
         await conn.execute(
@@ -158,11 +161,11 @@ async def run_benchmark():
     latencies_no_index.sort()
     latencies_with_index.sort()
 
-    def stats(l):
-        p50 = l[int(len(l) * 0.50)]
-        p95 = l[int(len(l) * 0.95)]
-        p99 = l[int(len(l) * 0.99)]
-        mean = sum(l) / len(l)
+    def stats(latencies):
+        p50 = latencies[int(len(latencies) * 0.50)]
+        p95 = latencies[int(len(latencies) * 0.95)]
+        p99 = latencies[int(len(latencies) * 0.99)]
+        mean = sum(latencies) / len(latencies)
         return mean, p50, p95, p99
 
     no_mean, no_p50, no_p95, no_p99 = stats(latencies_no_index)
@@ -173,12 +176,22 @@ async def run_benchmark():
     print("=" * 70)
     print(" BENCHMARK RESULTS SUMMARY (Latency in milliseconds)")
     print("=" * 70)
-    print(f"{'Metric':<18} | {'No Index (Table Scan)':<22} | {'Composite Index':<20} | {'Improvement'}")
+    print(
+        f"{'Metric':<18} | {'No Index (Table Scan)':<22} | {'Composite Index':<20} | {'Improvement'}"
+    )
     print("-" * 70)
-    print(f"{'Mean Latency':<18} | {no_mean:>18.2f} ms | {with_mean:>16.2f} ms | {speedup:.1f}x faster")
-    print(f"{'p50 (Median)':<18} | {no_p50:>18.2f} ms | {with_p50:>16.2f} ms | {(no_p50/with_p50 if with_p50 > 0 else 1.0):.1f}x faster")
-    print(f"{'p95 Latency':<18} | {no_p95:>18.2f} ms | {with_p95:>16.2f} ms | {(no_p95/with_p95 if with_p95 > 0 else 1.0):.1f}x faster")
-    print(f"{'p99 Latency':<18} | {no_p99:>18.2f} ms | {with_p99:>16.2f} ms | {(no_p99/with_p99 if with_p99 > 0 else 1.0):.1f}x faster")
+    print(
+        f"{'Mean Latency':<18} | {no_mean:>18.2f} ms | {with_mean:>16.2f} ms | {speedup:.1f}x faster"
+    )
+    print(
+        f"{'p50 (Median)':<18} | {no_p50:>18.2f} ms | {with_p50:>16.2f} ms | {(no_p50 / with_p50 if with_p50 > 0 else 1.0):.1f}x faster"
+    )
+    print(
+        f"{'p95 Latency':<18} | {no_p95:>18.2f} ms | {with_p95:>16.2f} ms | {(no_p95 / with_p95 if with_p95 > 0 else 1.0):.1f}x faster"
+    )
+    print(
+        f"{'p99 Latency':<18} | {no_p99:>18.2f} ms | {with_p99:>16.2f} ms | {(no_p99 / with_p99 if with_p99 > 0 else 1.0):.1f}x faster"
+    )
     print("=" * 70)
 
     await engine.dispose()

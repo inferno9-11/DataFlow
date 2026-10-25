@@ -1,5 +1,6 @@
 import random
 import time
+
 from locust import HttpUser, between, task
 
 
@@ -8,7 +9,9 @@ class DataFlowLoadTestUser(HttpUser):
 
     def on_start(self):
         """Register or authenticate user session."""
-        self.user_email = f"loadtest_{int(time.time() * 1000)}_{random.randint(1000, 9999)}@dataflow.dev"
+        self.user_email = (
+            f"loadtest_{int(time.time() * 1000)}_{random.randint(1000, 9999)}@dataflow.dev"
+        )
         self.password = "LoadTestPassword2026!"
         self.token = ""
 

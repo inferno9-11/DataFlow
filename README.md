@@ -1,5 +1,8 @@
 # DataFlow: Production-Grade Backend API & Asynchronous Processing Engine
 
+[![Live Deployment](https://img.shields.io/badge/Vercel-Live%20Demo-success?logo=vercel&logoColor=white)](https://dataflow-rosy.vercel.app)
+[![API Docs](https://img.shields.io/badge/OpenAPI-Swagger%20UI-blue?logo=swagger)](https://dataflow-rosy.vercel.app/docs)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-inferno9--11%2FDataFlow-181717?logo=github)](https://github.com/inferno9-11/DataFlow)
 [![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue?logo=github-actions)](.github/workflows/ci.yml)
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-blue?logo=python)](pyproject.toml)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688?logo=fastapi)](https://fastapi.tiangolo.com)
@@ -12,6 +15,32 @@
 > **DataFlow** is an interview-ready, production-grade backend engineering platform for high-throughput multi-tenant financial transaction ingestion, real-time risk assessment, and durable asynchronous batch processing.
 
 ---
+
+## 🌟 Live Demo & Interview Showcase
+
+The project is deployed and accessible online:
+
+| Resource | Direct Link | Description |
+| :--- | :--- | :--- |
+| **Live Web App & Dashboard** | **[https://dataflow-rosy.vercel.app](https://dataflow-rosy.vercel.app)** | Real-time interactive UI with glassmorphism telemetry dashboard |
+| **Interactive Swagger Docs** | **[https://dataflow-rosy.vercel.app/docs](https://dataflow-rosy.vercel.app/docs)** | Full OpenAPI schema with parameter documentation & live try-it |
+| **System Readiness Probe** | **[https://dataflow-rosy.vercel.app/health/live](https://dataflow-rosy.vercel.app/health/live)** | Container and database health diagnostics probe |
+| **GitHub Source Code** | **[https://github.com/inferno9-11/DataFlow](https://github.com/inferno9-11/DataFlow)** | Complete production repository with 13 atomic commits |
+
+### 🔑 Pre-Configured Demo Credentials
+| Role | Email | Password | Access Details |
+| :--- | :--- | :--- | :--- |
+| **Demo User** | `demo@dataflow.dev` | `DataFlow2026!Secure` | Pre-seeded with 1,000 transactions & batch jobs |
+| **Security Admin**| `admin@dataflow.dev` | `DataFlowAdmin2026!` | Administrative privileges & full metrics access |
+
+*(On the live app, click **`⚡ Quick Demo Login`** for instant 1-click authentication!)*
+
+### 🎙️ 2-Minute Interview Walkthrough Script
+1. **Show Architecture & Live Cloud Deployment**: Open **[https://dataflow-rosy.vercel.app](https://dataflow-rosy.vercel.app)**. Explain the async FastAPI architecture, connection pooling, and multi-tenant security model.
+2. **One-Click Authentication & Token Issuance**: Click `⚡ Quick Demo Login` to demonstrate Argon2id password verification and RFC 7519 signed JWT access tokens with role claims.
+3. **Asynchronous Batch Execution**: Click `Submit 5-Record Async Batch`. Explain how Celery/Redis workers decouple HTTP ingestion from processing, demonstrate row-level validation errors (negative amounts, malformed currencies), and open the **Job Diagnostics Modal**.
+4. **Empirical Performance Engineering**: Highlight how composite indexing `(user_id, occurred_at DESC)` accelerated tenant queries by **9.3x** (from 8.09ms to 0.87ms on a 25k record dataset).
+5. **OpenAPI & Telemetry**: Navigate to `/docs` for full interactive OpenAPI documentation and `/health/live` for container lifecycle probes.
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
